@@ -21,10 +21,8 @@ const protect = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret")
-    console.log('Token deco: ', decoded.id)
 
     req.user = await User.findById(decoded.id).select("-password")
-    console.log('Req.user: ', req.user)
 
     next()
   } catch (error) {
