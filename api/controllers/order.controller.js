@@ -87,12 +87,11 @@ const getOrderById = async (req, res) => {
 // @route   GET /api/orders/myorders
 // @access  Private
 const getMyOrders = async (req, res) => {
-  try {
-    const orders = await Order.find({ user: req.user._id })
-    res.json(orders)
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
+  const orders = await Order.find({ user: req.user._id })
+    .sort({ createdAt: -1 }) // Sort by date, newest first
+    .populate("items.product", "name price image")
+
+  res.json(orders)
 }
 
 // @desc    Update order status

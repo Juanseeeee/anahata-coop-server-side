@@ -4,7 +4,7 @@ const User = require("../models/user.model")
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || "your_jwt_secret", {
-    expiresIn: "30d",
+    expiresIn: "1h",
   })
 }
 
@@ -56,7 +56,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body
-
+    console.log(email,password)
     // Check for user email
     const user = await User.findOne({ email })
 
@@ -93,7 +93,7 @@ const login = async (req, res) => {
     }
 
     // Send response
-    res.json({
+    res.status(201).json({
       _id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -134,7 +134,6 @@ const logout = (req, res) => {
 // @access  Private
 const getProfile = async (req, res) => {
   try {
-    console.log('User id ',req.user)
     const user = await User.findById(req.user._id)
 
     if (!user) {
@@ -154,6 +153,7 @@ const getProfile = async (req, res) => {
       membershipId: user.membershipId,
       nextRenewal: user.nextRenewal,
       notifications: user.notifications,
+      isAdmin: user.isAdmin
     })
   } catch (error) {
     res.status(500).json({ message: error.message })
